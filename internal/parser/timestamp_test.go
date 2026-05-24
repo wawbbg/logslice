@@ -42,6 +42,29 @@ func TestParseTimestamp_KnownFormats(t *testing.T) {
 	}
 }
 
+// TestParseTimestamp_Roundtrip verifies that re-formatting a parsed timestamp
+// using the returned format string produces the original input string.
+func TestParseTimestamp_Roundtrip(t *testing.T) {
+	inputs := []string{
+		"2024-03-15T12:00:00Z",
+		"2024-03-15 12:00:00",
+		"2024/03/15 12:00:00",
+		"15/Mar/2024:12:00:00 +0000",
+	}
+
+	for _, input := range inputs {
+		t.Run(input, func(t *testing.T) {
+			parsed, format, err := ParseTimestamp(input)
+			if err != nil {
+				t.Fatalf("unexpected parse error: %v", err)
+			}
+			if got := parsed.Format(format); got != input {
+				t.Errorf("roundtrip mismatch: Format(%q) = %q, want %q", format, got, input)
+			}
+		})
+	}
+}
+
 func TestInRange(t *testing.T) {
 	base := time.Date(2024, 3, 15, 12, 0, 0, 0, time.UTC)
 	before := base.Add(-time.Hour)
