@@ -59,6 +59,14 @@ func TestLine_NoSensitiveData(t *testing.T) {
 	}
 }
 
+func TestLine_EmptyString(t *testing.T) {
+	r := New()
+	out := r.Line("")
+	if out != "" {
+		t.Errorf("expected empty string to remain empty, got: %q", out)
+	}
+}
+
 func TestWithRule_CustomPattern(t *testing.T) {
 	opt, err := WithRule(`\b\d{4}-\d{4}-\d{4}-\d{4}\b`, `[CARD]`)
 	if err != nil {
